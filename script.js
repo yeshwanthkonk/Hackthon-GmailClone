@@ -29,9 +29,8 @@ function updateStatus(){
         <nav class="navbar navbar-dark bg-dark" style="border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;">
             <a class="navbar-brand">Gmail Clone</a>
             <button class="btn btn-warning mr-sm-2 my-2 my-sm-0" onclick="showCompose()">Compose</button>
-            <form class="form-inline">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <form class="form-inline" onsubmit="return false;">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" onchange="searchMail(this)">
             </form>
             <button class="btn btn-success" onclick="SignOut()">Sign Out</button>
         </nav>
@@ -53,7 +52,7 @@ function updateStatus(){
         document.getElementById('cont').innerHTML = `
         <nav class="navbar navbar-dark bg-dark" style="border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;">
             <a class="navbar-brand">Gmail Clone</a>
-            <form class="form-inline">
+            <form class="form-inline" onsubmit="return false;">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
               <button class="btn btn-outline-success " type="submit">Search</button>
               
@@ -74,17 +73,21 @@ function SignIn(){
 function SignOut(){
     google_auth.signOut();
 }
-function setDom(label){
-    
+function setDom(label=undefined, query = undefined){
     let mails = document.getElementById('mails');
     mails.innerHTML = '';
     gapi.client.gmail.users.messages.list({
         'userId': 'me',
         'labelIds': label,
-        'maxResults': 10
+        'maxResults': 10,
+        "q": query
     }).then(function(response){
         let co = 0;
         console.log(label, response);
+        if(response.result.messages === undefined){
+            alert("No responses for the search");
+            return;
+        }
         response.result.messages.forEach((item)=>{
             gapi.client.gmail.users.messages.get({
                 'userId': 'me',
@@ -135,4 +138,12 @@ function mail_It(){
     document.getElementById('send-sub').value = '';
     document.getElementById('send-message').value = '';
     $("#Compose").modal("hide");
+}
+function searchMail(node){
+    console.log(node.value);
+    if(node.value == ""){
+        setDom("INBOX", node.value);
+        return;
+    }
+    setDom(undefined, node.value);
 }
