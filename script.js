@@ -37,11 +37,11 @@ function updateStatus(){
         <br>
         <div class='row'>
         <div class='col-3' id='labels'>
-            <button type="button" class="btn btn-light btn-lg btn-block" onclick="setDom('INBOX')">Inbox</button>
-            <button type="button" class="btn btn-light btn-lg btn-block" onclick="setDom('SENT')">Sent Mails</button>
-            <button type="button" class="btn btn-light btn-lg btn-block" onclick="setDom('TRASH')">Trash Mails</button>
-            <button type="button" class="btn btn-light btn-lg btn-block" onclick="setDom('SPAM')">Spam Mails</button>
-            <button type="button" class="btn btn-light btn-lg btn-block" onclick="setDom('UNREAD')">Unread Mails</button>
+            <button type="button" class="btn btn-light btn btn-block" onclick="setDom('INBOX')" style="padding: 10px;">Inbox</button>
+            <button type="button" class="btn btn-light btn btn-block" onclick="setDom('SENT')" style="padding: 10px;">Sent Mails</button>
+            <button type="button" class="btn btn-light btn-md btn-block" onclick="setDom('TRASH')" style="padding: 10px;">Trash Mails</button>
+            <button type="button" class="btn btn-light btn-md btn-block" onclick="setDom('SPAM')" style="padding: 10px;">Spam Mails</button>
+            <button type="button" class="btn btn-light btn btn-block" onclick="setDom('UNREAD')" style="padding: 10px;">Unread Mails</button>
         </div>
         <div class='col-8' id='mails' style="text-align:left"></div>
         </div>
@@ -94,10 +94,11 @@ function setDom(label=undefined, query = undefined){
                 'id': item.id
             }).then(function(response){
                 console.log(label, response);
-                let subject;
+                let subject, from;
                 response.result.payload.headers.forEach((item)=>{if(item.name == "Subject"){subject=item.value}})
+                response.result.payload.headers.forEach((item)=>{if(item.name == "From"){from=item.value}})
                 mails.innerHTML += `
-                <div class="card text-white bg-${themes[co%themes.length]} mb-3">
+                <div class="card text-white bg-${themes[co%themes.length]} mb-3" onclick="showMail(this)" id=${from}>
                   <div class="card-header">${subject} :-  </div>
                   <div class="card-body">
                     <p class="card-text">${response.result.snippet}</p>
@@ -146,4 +147,8 @@ function searchMail(node){
         return;
     }
     setDom(undefined, node.value);
+}
+
+function showMail(node){
+    $("#ShowMail").modal("show");
 }
