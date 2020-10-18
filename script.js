@@ -96,9 +96,9 @@ function setDom(label=undefined, query = undefined){
                 console.log(label, response);
                 let subject, from;
                 response.result.payload.headers.forEach((item)=>{if(item.name == "Subject"){subject=item.value}})
-                response.result.payload.headers.forEach((item)=>{if(item.name == "From"){from=item.value}})
+                
                 mails.innerHTML += `
-                <div class="card text-white bg-${themes[co%themes.length]} mb-3" onclick="showMail(this)" id=${from}>
+                <div class="card text-white bg-${themes[co%themes.length]} mb-3" onclick="showMail(this)" id=${item.id}>
                   <div class="card-header">${subject} :-  </div>
                   <div class="card-body">
                     <p class="card-text">${response.result.snippet}</p>
@@ -150,5 +150,22 @@ function searchMail(node){
 }
 
 function showMail(node){
+    var subject, from;
+    gapi.client.gmail.users.messages.get({
+        'userId': 'me',
+        'id': node.id
+    }).then(function(response){        
+        response.result.payload.headers.forEach((item)=>{if(item.name == "Subject"){subject=item.value}})
+        response.result.payload.headers.forEach((item)=>{if(item.name == "From"){from=item.value}})
+        let loc = from.search("<");
+        if(loc>=0){
+            from = from.slice(0, loc)+from.match(/<.+?>/g)[0].substr(1, from.match(/<.+?>/g)[0].length-2);
+            
+        }
+        document.getElementById('show-sub').value = subject;
+        document.getElementById('show-from').value = from;
+        document.getElementById('show-message').value = response.result.snippet;
+    });
+
     $("#ShowMail").modal("show");
 }
