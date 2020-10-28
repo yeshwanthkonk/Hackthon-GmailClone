@@ -1,7 +1,7 @@
 var scope = 'https://mail.google.com/';
 var discovery_docs = ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"];
-var api_key = 'AIzaSyCVI-XUKFE8vScyWSD4Yt08_OhSYrYCBq4';
-var client_id = '658791317962-i0ff8qpv14p5t4skr13a7gqagm0rfrbp.apps.googleusercontent.com';
+var api_key = 'AIzaSyCVI';
+var client_id = '658791317962.apps.googleusercontent.com';
 var google_auth;
 var user;
 
